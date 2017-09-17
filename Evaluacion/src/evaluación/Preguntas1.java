@@ -71,5 +71,8 @@ public class Preguntas1 extends JFrame {
         return preg1[posi];
     }
     
+    public int getLength(){
+        return this.preg1.length;
+    }
 
 }

@@ -12,9 +12,8 @@ import java.util.StringTokenizer;
  * @author Angie Castañeda
  */
 public class Respuestas1 {
-    
+
     public String[] resp1 = {
-        
         "No. Esta nombrado, pero no conoce sus funciones ni se ha reunido. Esta nombrado, conoce sus funciones pero no se reúne.  Esta nombrado, conoce sus funciones y hay evidencia de las reuniones",
         "No. Verifica las políticas pero no hay evidencia. Verifica las políticas, hay evidencia pero no se implementan correctivos. Verifica las políticas, hay evidencias y se implementan los correctivos",
         "No. Analiza las normas y estándares pero no las difunde. Analiza las normas y estándares de seguridad pero no existe evidencia. Analiza y difunde las normas y estándares y existe evidencia",
@@ -65,32 +64,35 @@ public class Respuestas1 {
         "No. No aplica. Conocen la ley 1621 y el decreto 1070 y algunos documentos están clasificados correctamente. Conocen la ley y el decreto 1070 y los documentos están correctamente clasificados",
         "No. El personal no conoce la ley y no clasifica los documentos de esta forma. Algunos documentos se clasifican según la ley 1712 y el personal conoce la ley. Clasifica correctamente la información y documentos que no son de inteligencia y contrainteligencia"
     };
-    
-    public String getRespuesta(int posi){
+
+    public String getRespuesta(int posi) {
         return resp1[posi];
     }
-    
-    public String[] separa(String cadena, String separador){
-        
+
+    public String[] separa(String cadena, String separador) {
+
         StringTokenizer token = new StringTokenizer(cadena, separador);
-        
+
         String[] aux = new String[4];
         int i = 0;
-        
-        while(token.hasMoreTokens()){
-            
+
+        while (token.hasMoreTokens()) {
+
             aux[i] = token.nextToken();     //obtiene token
             i++;
         }
-        
+
         return aux;
-        
+
     }
-    
-    public String[] setRespuesta(int posi){
+
+    public String[] setRespuesta(int posi) {
         String s1 = resp1[posi];
-        String [] s2 = separa(s1, ".");
+        String[] s2 = separa(s1, ".");
         return s2;
     }
-    
+
+    public int getLength() {       
+        return this.resp1.length;
+    }
 }

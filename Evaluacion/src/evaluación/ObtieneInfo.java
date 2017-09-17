@@ -8,26 +8,30 @@ package evaluación;
 import com.mysql.jdbc.MysqlIO;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.io.IOException;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author johans
  */
-public class ObtieneInfo  extends JFrame implements ActionListener{
+public class ObtieneInfo extends JFrame implements ActionListener {
 
     /**
      * Creates new form ObtieneInfo
      *
      * @throws java.io.IOException
      */
-    public ObtieneInfo() {       
-
+    public ObtieneInfo() {
         initComponents();
+        loadCombobox();
+        //
     }
 
     /**
@@ -41,10 +45,14 @@ public class ObtieneInfo  extends JFrame implements ActionListener{
 
         LISTAR__ = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        LISTAR__.setText("Listar");
+        LISTAR__.setText("Mostrar todos los registros");
         LISTAR__.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 LISTAR__ActionPerformed(evt);
@@ -52,6 +60,37 @@ public class ObtieneInfo  extends JFrame implements ActionListener{
         });
 
         jButton2.setText("Consultar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox1ItemStateChanged(evt);
+            }
+        });
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Id");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -59,10 +98,19 @@ public class ObtieneInfo  extends JFrame implements ActionListener{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(LISTAR__)
-                .addGap(45, 45, 45)
-                .addComponent(jButton2)
-                .addContainerGap(207, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(LISTAR__)
+                        .addGap(73, 73, 73)
+                        .addComponent(jButton2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 562, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -70,8 +118,13 @@ public class ObtieneInfo  extends JFrame implements ActionListener{
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(LISTAR__)
-                    .addComponent(jButton2))
-                .addContainerGap(266, Short.MAX_VALUE))
+                    .addComponent(jButton2)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -83,27 +136,121 @@ public class ObtieneInfo  extends JFrame implements ActionListener{
             DriverManager.registerDriver(new org.gjt.mm.mysql.Driver());
             // Se crea un Statement, para realizar la consulta
             try ( // Se obtiene una conexión con la base de datos. Hay que
-            // cambiar el usuario "root" y la clave "la_clave" por las
-            // adecuadas a la base de datos que estemos usando.
+                    // cambiar el usuario "root" y la clave "la_clave" por las
+                    // adecuadas a la base de datos que estemos usando.
                     Connection conexion = DriverManager.getConnection(
-                            "jdbc:mysql://localhost/admin", "johans", "")) {
+                            "jdbc:mysql://localhost/evaluacion", "johans", "")) {
                 // Se crea un Statement, para realizar la consulta
                 Statement s = conexion.createStatement();
                 // Se realiza la consulta. Los resultados se guardan en el
                 // ResultSet rs
-                ResultSet rs = s.executeQuery("select * from user");
+                ResultSet rs = s.executeQuery("select * from respuestas");
                 // Se recorre el ResultSet, mostrando por pantalla los resultados.
-                while (rs.next()) {
-                    /*System.out.println(rs.getInt("Id") + " " + rs.getString(2)
-                            + " " + rs.getDate(3));*/
-                    System.out.println(rs.getInt("Id"));
+                DefaultTableModel modelo = new DefaultTableModel();
+                jTable1.setModel(modelo);
+                modelo.addColumn("id");
+                modelo.addColumn("fecha");
+                for (int x = 1; x <= 48; x++) {
+                    modelo.addColumn("respuesta: " + x);
                 }
-                // Se cierra la conexión con la base de datos.
+                while (rs.next()) {
+                    Object[] fila = new Object[50];
+                    for (int i = 1; i < 50; i++) {
+                        fila[i] = rs.getObject(i + 1); // El primer indice en rs es el 1, no el cero, por eso se suma 1.
+                    }
+                    // Se añade al modelo la fila completa.
+                    modelo.addRow(fila);
+                }
+                // Se cierra la conexión con la base de datos...
             }
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             System.out.println(e.getSQLState());
         }
     }//GEN-LAST:event_LISTAR__ActionPerformed
+    /**
+     *
+     */
+    public void loadCombobox() {
+        try {
+            // Se registra el Driver de MySQL       
+            DriverManager.registerDriver(new org.gjt.mm.mysql.Driver());
+            // Se crea un Statement, para realizar la consulta
+            try ( // Se obtiene una conexión con la base de datos. Hay que
+                    // cambiar el usuario "root" y la clave "la_clave" por las
+                    // adecuadas a la base de datos que estemos usando.
+                    Connection conexion = DriverManager.getConnection(
+                            "jdbc:mysql://localhost/evaluacion", "johans", "")) {
+                // Se crea un Statement, para realizar la consulta
+                Statement s = conexion.createStatement();
+                // Se realiza la consulta. Los resultados se guardan en el
+                // ResultSet rs
+                ResultSet rs = s.executeQuery("select * from respuestas");
+                // Se recorre el ResultSet, mostrando por pantalla los resultados.              
+                jComboBox1.addItem("");
+                while (rs.next()) {
+                    /*System.out.println(rs.getInt("Id") + " " + rs.getString(2)
+                            + " " + rs.getDate(3));*/
+                    String response = "Fecha: " + rs.getString("fecha");
+                    jComboBox1.addItem(response);
+                }
+                // Se cierra la conexión con la base de datos...
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getSQLState());
+        }
+    }
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+        if (!" ".equals(evt.getItemSelectable().toString())) {
+            try {
+                // Se registra el Driver de MySQL       
+                DriverManager.registerDriver(new org.gjt.mm.mysql.Driver());
+                // Se crea un Statement, para realizar la consulta
+                try ( // Se obtiene una conexión con la base de datos. Hay que
+                        // cambiar el usuario "root" y la clave "la_clave" por las
+                        // adecuadas a la base de datos que estemos usando.
+                        Connection conexion = DriverManager.getConnection(
+                                "jdbc:mysql://localhost/evaluacion", "johans", "")) {
+                    // Se crea un Statement, para realizar la consulta
+                    Statement s = conexion.createStatement();
+                    // Se realiza la consulta. Los resultados se guardan en el
+                    // ResultSet rs
+
+                    String request = "SELECT `id`, `fecha`, `resp1`, `resp2`, `resp3`, `resp4`, `resp5`, `resp6`, `resp7`, `resp8`, `resp9`, `resp10`, `resp11`, `resp12`, `resp13`, `resp14`, `resp15`, `resp16`, `resp17`, `resp18`, `resp19`, `resp20`, `resp21`, `resp22`, `resp23`, `resp24`, `resp25`, `resp26`, `resp27`, `resp28`, `resp29`, `resp30`, `resp31`, `resp32`, `resp33`, `resp34`, `resp35`, `resp36`, `resp37`, `resp38`, `resp39`, `resp40`, `resp41`, `resp42`, `resp43`, `resp44`, `resp45`, `resp46`, `resp47`, `resp48` FROM respuestas WHERE  fecha=" + this.jComboBox1.getSelectedItem().toString();
+                    ResultSet rs = s.executeQuery("select * from respuestas ");
+                    // Se recorre el ResultSet, mostrando por pantalla los resultados.
+                    DefaultTableModel modelo = new DefaultTableModel();
+                    jTable1.setModel(modelo);
+                    modelo.addColumn("id");
+                    modelo.addColumn("fecha");
+                    for (int x = 1; x <= 48; x++) {
+                        modelo.addColumn("respuesta: " + x);
+                    }
+                    while (rs.next()) {
+                        Object[] fila = new Object[50];
+                        for (int i = 1; i < 50; i++) {
+                            fila[i] = rs.getObject(i + 1); // El primer indice en rs es el 1, no el cero, por eso se suma 1.
+                        }
+                        // Se añade al modelo la fila completa.
+                        modelo.addRow(fila);
+                    }
+                    // Se cierra la conexión con la base de datos...
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                System.out.println(e.getSQLState());
+            }
+        }else{}
+    }//GEN-LAST:event_jComboBox1ItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -137,10 +284,15 @@ public class ObtieneInfo  extends JFrame implements ActionListener{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton LISTAR__;
     private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
+
 }
