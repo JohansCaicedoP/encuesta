@@ -202,15 +202,7 @@ public class ObtieneInfo extends JFrame implements ActionListener {
         }
     }
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-
-    }//GEN-LAST:event_jComboBox1ActionPerformed
-
-    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
-        if (!" ".equals(evt.getItemSelectable().toString())) {
+        //if (!"".equals(evt.getItemSelectable().toString())) {
             try {
                 // Se registra el Driver de MySQL       
                 DriverManager.registerDriver(new org.gjt.mm.mysql.Driver());
@@ -242,6 +234,7 @@ public class ObtieneInfo extends JFrame implements ActionListener {
                         }
                         // Se añade al modelo la fila completa.
                         modelo.addRow(fila);
+                        System.out.println(fila);
                     }
                     // Se cierra la conexión con la base de datos...
                 }
@@ -249,7 +242,15 @@ public class ObtieneInfo extends JFrame implements ActionListener {
                 System.out.println(e.getMessage());
                 System.out.println(e.getSQLState());
             }
-        }else{}
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
     /**
