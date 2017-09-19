@@ -79,8 +79,10 @@ public class Principal extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if(BTN_INICIA.equals(e.getActionCommand())){
             setVisible(false);
-            InfoInicial i = new InfoInicial();
-            i.setVisible(true);
+            /*InfoInicial i = new InfoInicial();
+            i.setVisible(true);*/
+            loginTest logiTest = new loginTest();
+            logiTest.setVisible(true);
         }
         if(BTN_CONSULTA.equals(e.getActionCommand())){
             setVisible(false);

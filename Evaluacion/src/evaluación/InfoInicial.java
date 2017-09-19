@@ -94,10 +94,7 @@ public class InfoInicial extends JFrame implements ActionListener{
         add(panel);
         setVisible(true);
     }
-
-    
-    
-    
+            
     @Override
     public void actionPerformed(ActionEvent e) {
         
