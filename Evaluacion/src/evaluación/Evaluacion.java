@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package evaluación;
 
 import java.awt.Color;
@@ -15,8 +10,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Calendar;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,6 +25,12 @@ import javax.swing.JRadioButton;
  */
 public class Evaluacion extends JFrame implements ActionListener {
 
+    String name;
+
+    public void setName(String nombre) {
+        this.name = nombre;
+    }
+
     private JPanel panel;
     private JButton JBavanza, JBfinaliza;
     private JLabel LPregunta, LNumPreg;
@@ -42,15 +41,9 @@ public class Evaluacion extends JFrame implements ActionListener {
     Respuestas1 r = new Respuestas1();
     Preguntas1 p = new Preguntas1();
     int[] response = new int[49];
-    
+
     public Evaluacion() {
 
-        
-        System.out.println("Longitud de las resouestas"+r.getLength());
-        System.out.println("Longitud de las preguntas"+p.getLength());
-        System.out.println("Longitud de response"+response.length);
-        
-        
         setSize(700, 400);
         setTitle("NUEVA EVALUACION");
         setLocation(500, 100);
@@ -117,11 +110,10 @@ public class Evaluacion extends JFrame implements ActionListener {
         JRopc2.setText(aux[1]);
         JRopc3.setText(aux[2]);
         JRopc4.setText(aux[3]);
-        JRopc1.requestFocus();
+        //JRopc1.requestFocus();                       
 
         add(panel);
         setVisible(true);
-
     }
 
     public void showGui(int posi) {
@@ -174,12 +166,13 @@ public class Evaluacion extends JFrame implements ActionListener {
     }
 
     public void showQuetions(int posicion) {
-        
+
         String[] aux = r.setRespuesta(posicion);
 
         LPregunta.setText(p.getPregunta(posicion));
 
         CBGroupResp.clearSelection();
+        /*Avanzar rapido->>*/ JRopc1.setSelected(true);
 
         JRopc1.setText(aux[0]);
         JRopc2.setText(aux[1]);
@@ -191,25 +184,26 @@ public class Evaluacion extends JFrame implements ActionListener {
     }
 
     int index = 0;
-    
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        System.out.println(this.name);
         if (e.getSource() == JBavanza) {
             if (JRopc1.isSelected()) {
-                response[index] = 1;               
+                response[index] = 1;
                 showGui(index);
                 showQuetions(index);
             } else if (JRopc2.isSelected()) {
-                response[index] = 2;                
+                response[index] = 2;
                 showGui(index);
                 showQuetions(index);
             } else if (JRopc3.isSelected()) {
-                response[index] = 3;               
+                response[index] = 3;
                 showGui(index);
                 showQuetions(index);
             } else if (JRopc4.isSelected()) {
-                response[index] = 4;                
+                response[index] = 4;
                 showGui(index);
                 showQuetions(index);
             } else {
@@ -244,28 +238,26 @@ public class Evaluacion extends JFrame implements ActionListener {
             if (response[ii] != 0) {
                 flag++;
             }
-            if (flag == 49) {
-                build(response);
+            if (flag == 49) {//49
+                saveData(response);
             }
         }
 
         index++;
-        if(index == 49){//Control del numero de preguntas a mostrar
-           JOptionPane.showMessageDialog(this, "Evaluación finalizada.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+        if (index == 49) {//Control del numero de preguntas a mostrar -> 49 
+            JOptionPane.showMessageDialog(this, "Evaluación finalizada.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
             setVisible(false);
-            Principal principal = new Principal(); 
+            Principal principal = new Principal();
             principal.setVisible(true);
         }
     }
 
-    public void build(int table[]) {
+    public void saveData(int table[]) {
 
         try {
             DriverManager.registerDriver(new org.gjt.mm.mysql.Driver());
             try (Connection conexion = DriverManager.getConnection(
                     "jdbc:mysql://localhost/evaluacion", "johans", "")) {
-
-                Statement s = conexion.createStatement();
 
                 String query = "insert into respuestas (fecha, resp1,resp2, resp3, resp4, resp5, resp6, "
                         + "resp7, resp8, resp9, resp10, resp11, resp12, resp13, resp14, resp15, resp16,"
@@ -275,14 +267,14 @@ public class Evaluacion extends JFrame implements ActionListener {
                         + " values (?,?,?,?,?,?,?,?,? ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
                 PreparedStatement preparedStmt = conexion.prepareStatement(query);
-                preparedStmt.setString(1, "fecha");//<<1 registro fecha>>
+                preparedStmt.setString(1, this.name);
+
                 int cont = 0;
                 for (int i = 2; i < 50; i++) {// Este bucle guarda las respuestas
                     System.out.println("preparedStmt.setInt(" + i + ", table[" + cont + "]);");
                     preparedStmt.setInt(i, table[cont]);
                     cont++;
                 }
-                //preparedStmt.execute();
 
                 conexion.close();
             }

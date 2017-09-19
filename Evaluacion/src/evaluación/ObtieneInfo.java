@@ -5,16 +5,11 @@
  */
 package evaluación;
 
-import com.mysql.jdbc.MysqlIO;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.io.IOException;
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
-import javax.swing.JTable;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -202,7 +197,7 @@ public class ObtieneInfo extends JFrame implements ActionListener {
                 while (rs.next()) {
                     /*System.out.println(rs.getInt("Id") + " " + rs.getString(2)
                             + " " + rs.getDate(3));*/
-                    String response = "Fecha: " + rs.getString("fecha");
+                    String response = rs.getString("fecha");
                     jComboBox1.addItem(response);
                 }
                 // Se cierra la conexión con la base de datos...
@@ -213,47 +208,46 @@ public class ObtieneInfo extends JFrame implements ActionListener {
         }
     }
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        //if (!"".equals(evt.getItemSelectable().toString())) {
-            try {
-                // Se registra el Driver de MySQL       
-                DriverManager.registerDriver(new org.gjt.mm.mysql.Driver());
+        try {
+            // Se registra el Driver de MySQL       
+            DriverManager.registerDriver(new org.gjt.mm.mysql.Driver());
+            // Se crea un Statement, para realizar la consulta
+            try ( // Se obtiene una conexión con la base de datos. Hay que
+                    // cambiar el usuario "root" y la clave "la_clave" por las
+                    // adecuadas a la base de datos que estemos usando.
+                    Connection conexion = DriverManager.getConnection(
+                            "jdbc:mysql://localhost/evaluacion", "johans", "")) {
                 // Se crea un Statement, para realizar la consulta
-                try ( // Se obtiene una conexión con la base de datos. Hay que
-                        // cambiar el usuario "root" y la clave "la_clave" por las
-                        // adecuadas a la base de datos que estemos usando.
-                        Connection conexion = DriverManager.getConnection(
-                                "jdbc:mysql://localhost/evaluacion", "johans", "")) {
-                    // Se crea un Statement, para realizar la consulta
-                    Statement s = conexion.createStatement();
-                    // Se realiza la consulta. Los resultados se guardan en el
-                    // ResultSet rs
+                Statement s = conexion.createStatement();
+                String fecha = "Tue Mar 04 07:53:44 COT 2014";
+                ResultSet rs = s.executeQuery("SELECT * from respuestas");
 
-                    String request = "SELECT `id`, `fecha`, `resp1`, `resp2`, `resp3`, `resp4`, `resp5`, `resp6`, `resp7`, `resp8`, `resp9`, `resp10`, `resp11`, `resp12`, `resp13`, `resp14`, `resp15`, `resp16`, `resp17`, `resp18`, `resp19`, `resp20`, `resp21`, `resp22`, `resp23`, `resp24`, `resp25`, `resp26`, `resp27`, `resp28`, `resp29`, `resp30`, `resp31`, `resp32`, `resp33`, `resp34`, `resp35`, `resp36`, `resp37`, `resp38`, `resp39`, `resp40`, `resp41`, `resp42`, `resp43`, `resp44`, `resp45`, `resp46`, `resp47`, `resp48` FROM respuestas WHERE  fecha=" + this.jComboBox1.getSelectedItem().toString();
-                    ResultSet rs = s.executeQuery("select * from respuestas ");
-                    // Se recorre el ResultSet, mostrando por pantalla los resultados.
-                    DefaultTableModel modelo = new DefaultTableModel();
-                    jTable1.setModel(modelo);
-                    modelo.addColumn("id");
-                    modelo.addColumn("fecha");
-                    for (int x = 1; x <= 48; x++) {
-                        modelo.addColumn("respuesta: " + x);
-                    }
-                    while (rs.next()) {
-                        Object[] fila = new Object[50];
-                        for (int i = 1; i < 50; i++) {
-                            fila[i] = rs.getObject(i + 1); // El primer indice en rs es el 1, no el cero, por eso se suma 1.
-                        }
-                        // Se añade al modelo la fila completa.
-                        modelo.addRow(fila);
-                        System.out.println(fila);
-                    }
-                    // Se cierra la conexión con la base de datos...
+                DefaultTableModel modelo = new DefaultTableModel();
+                jTable1.setModel(modelo);
+                modelo.addColumn("id");
+                modelo.addColumn("fecha");
+                for (int x = 1; x <= 48; x++) {
+                    modelo.addColumn("respuesta: " + x);
                 }
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-                System.out.println(e.getSQLState());
+                String dateSelect = jComboBox1.getSelectedItem().toString();
+                while (rs.next()) {
+                    Object[] fila = new Object[50];
+                    for (int i = 1; i < 50; i++) {
+                        fila[i] = rs.getObject(i + 1);                                              
+                        if(fila[i].toString().equals(dateSelect)){
+                              JOptionPane.showMessageDialog(this, fila[i].toString(), "Mensaje", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                    // Se añade al modelo la fila completa.
+                    modelo.addRow(fila);
+                    System.out.println(rs.next());
+                }
+                // Se cierra la conexión con la base de datos...
             }
-        
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getSQLState());
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -312,7 +306,7 @@ public class ObtieneInfo extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        
+
     }
 
 }

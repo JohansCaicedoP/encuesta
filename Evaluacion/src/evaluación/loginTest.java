@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package evaluación;
 
 import java.awt.Color;
@@ -17,6 +12,12 @@ import javax.swing.JOptionPane;
  * @author johans
  */
 public final class loginTest extends javax.swing.JFrame {
+
+    String date;
+
+    public String getDateSelect() {
+        return this.date;
+    }
 
     /**
      * Creates new form loginTest
@@ -138,9 +139,18 @@ public final class loginTest extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        validaCampos();
-        Evaluacion evaluacion = new Evaluacion();
-        evaluacion.setVisible(true);
+      
+        if (validaCampos()) {
+            JOptionPane.showMessageDialog(this, "Todos los campos deben estar llenos", "Mensaje", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Evaluacion evaluacion = new Evaluacion();
+            evaluacion.setName(jComboBox2.getSelectedItem().toString());
+            evaluacion.setVisible(true);
+        }
+
+        if (jComboBox2.getSelectedItem() != "Seleccione") {
+            this.date = jComboBox2.getSelectedItem().toString();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -180,42 +190,42 @@ public final class loginTest extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox2;
+    public javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
+    public javax.swing.JTextField jTextField1;
+    public javax.swing.JTextField jTextField2;
+    public javax.swing.JTextField jTextField3;
+    public javax.swing.JTextField jTextField4;
     // End of variables declaration//GEN-END:variables
 
     private boolean validaCampos() {
+        boolean flag = false;
         if (jComboBox2.getSelectedItem() == "Seleccione") {
-            JOptionPane.showMessageDialog(this, "Seleccione una fecha correcta", "Mensaje", JOptionPane.ERROR_MESSAGE);
-            //jComboBox2.setForeground(Color.red);
-            return false;
+            //JOptionPane.showMessageDialog(this, "Seleccione una fecha correcta", "Mensaje", JOptionPane.ERROR_MESSAGE);
+            //jComboBox2.setForeground(Color.red);   
+            flag = true;
         } else if (jTextField1.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Todos los campos deben estar llenos", "Mensaje", JOptionPane.ERROR_MESSAGE);
+            //JOptionPane.showMessageDialog(this, "Todos los campos deben estar llenos", "Mensaje", JOptionPane.ERROR_MESSAGE);
             jTextField1.setForeground(Color.red);
-            return false;
+            flag = true;
         } else if (jTextField2.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Todos los campos deben estar llenos", "Mensaje", JOptionPane.ERROR_MESSAGE);
+            //JOptionPane.showMessageDialog(this, "Todos los campos deben estar llenos", "Mensaje", JOptionPane.ERROR_MESSAGE);
             jTextField2.setForeground(Color.red);
-            return false;
+            flag = true;
         } else if (jTextField3.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Todos los campos deben estar llenos", "Mensaje", JOptionPane.ERROR_MESSAGE);
+            //JOptionPane.showMessageDialog(this, "Todos los campos deben estar llenos", "Mensaje", JOptionPane.ERROR_MESSAGE);
             jTextField3.setForeground(Color.red);
-            return false;
+            flag = true;
         } else if (jTextField4.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Todos los campos deben estar llenos", "Mensaje", JOptionPane.ERROR_MESSAGE);
+            //JOptionPane.showMessageDialog(this, "Todos los campos deben estar llenos", "Mensaje", JOptionPane.ERROR_MESSAGE);
             jTextField4.setForeground(Color.red);
-            return false;
+            flag = true;
         }
-
-        return true;
+        return flag;
     }
 
     public List<Date> getListaEntreFechas(Date fechaInicio, Date fechaFin) {
